@@ -67,7 +67,7 @@ Evidence:
 
 ## T10 — Live Claude Code round-trip and phase exit (depends: T4, T6, T8)
 
-Manifests installed; a real Claude Code session's Stop hook persists a task visible in `credent schedule list`; measure the actual SessionEnd budget and record it. Then all six exit criteria from objectives.md, outputs recorded. Phase completion: merge commit develop→main, tag `phase-03` (user-gated).
+Manifests installed; a real Claude Code session's Stop hook persists a task visible in `credent schedule list`; measure the actual SessionEnd budget and record it. Then all six exit criteria from objectives.md, outputs recorded. Phase completion: PR `develop` → `main`, tag `phase-03` (user-gated).
 
 Verify: `./check.sh` plus objectives.md exit commands
 Evidence:

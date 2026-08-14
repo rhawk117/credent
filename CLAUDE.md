@@ -48,7 +48,7 @@ Host hooks are wire-compatible: Copilot CLI accepts Claude-style PascalCase even
 
 ## Engineering loop
 
-Branch model: task branches `feat/p0N-<slug>` (or `fix/`, `chore/`, …) off `develop`; squash-merge to `develop` via PR once CI is green (auto-merge is approved policy); phase completion is a merge commit `develop` → `main` tagged `phase-0N`, gated on the user.
+Branch model: task branches `feat/p0N-<slug>` (or `fix/`, `chore/`, …) off `develop`; squash-merge to `develop` via PR once CI is green (auto-merge is approved policy); phase completion is a PR from `develop` into `main` tagged `phase-0N`, gated on the user (branch protection requires an approving review plus the `check` status).
 
 Commits: `kind(scope): summary` — kinds: feat, fix, chore, docs, test, refactor, ci. PRs fill `.github/PULL_REQUEST_TEMPLATE.md`; CI runs `./check.sh`.
 
@@ -63,7 +63,7 @@ Agent roster and models — always dispatch these agents by name:
 | git-publisher | haiku 4.5 | opens PRs from the template, watches CI, squash-merges on green |
 | ci-watcher | session default | standalone CI verdicts when no publish is in flight |
 
-When dispatching any subagent, the primary agent writes the dispatch prompt with the **promptlint** skill so every agent receives clear, verifiable instructions.
+When dispatching any subagent, the primary agent writes the dispatch prompt with the **promptlint** skill so every agent receives clear, verifiable instructions, and names any skill the task needs directly in the prompt — subagents do not reliably discover skills on their own. Project skills: **triaging-phase-evidence** (pre-phase research and evidence triage), **cleaning-stale-docs** (doc references made stale by a process/naming change).
 
 Per-task cycle:
 
