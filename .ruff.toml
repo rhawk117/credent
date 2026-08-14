@@ -84,6 +84,7 @@ ignore = [
     "S104",
     "S105",
     "S106",
+    "A002", # Capability.execute(input=...) is an ADR-pinned signature
 ]
 [lint.per-file-ignores]
 # Standalone entry points invoked by path, not an importable package.
