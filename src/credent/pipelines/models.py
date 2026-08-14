@@ -11,6 +11,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from credent.domain.observations import EvidenceItem
+from credent.domain.provenance import BeliefGraph
 from credent.domain.transitions import UnknownItem
 
 
@@ -46,3 +48,24 @@ class HostAnswerPayload(BaseModel):
 
     answer: str | None
     status: Literal['answered', 'unknown']
+
+
+class QueryRequest(BaseModel):
+    """A question to answer, grounded in a fixed set of evidence."""
+
+    question: str
+    evidence: tuple[EvidenceItem, ...]
+
+
+class PipelineOutcome(BaseModel):
+    """What a pipeline produced for one `QueryRequest`.
+
+    Parameters
+    ----------
+    graph
+        The belief graph reconciled by the belief-state pipeline. Always
+        `None` for the baseline pipeline, which never builds belief state.
+    """
+
+    answer: HostAnswerPayload
+    graph: BeliefGraph | None = None
