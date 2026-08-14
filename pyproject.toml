@@ -7,7 +7,20 @@ authors = [
     { name = "rhawk117", email = "hawkinsry19@gmail.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "anyio>=4.14.2",
+    "arize-phoenix>=20.2.0",
+    "numpy>=2.5.2",
+    "openinference-instrumentation>=0.1.57",
+    "polars>=1.43.2",
+    "pyarrow>=25.0.1",
+    "pydantic>=2.13.4",
+    "pydantic-evals>=2.30.0",
+    "rich>=15.0.0",
+    "scipy>=1.18.0",
+    "sqlalchemy>=2.0.52",
+    "typer>=0.27.1",
+]
 
 [project.scripts]
 credent = "credent:main"
@@ -28,5 +41,6 @@ dev = [
 test = [
     "hypothesis>=6.165.6",
     "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
     "pytest-cov>=7.1.0",
 ]

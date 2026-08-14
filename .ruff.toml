@@ -1,5 +1,7 @@
-# Vendored skill tooling, not project code.
-extend-exclude = ["uncle-bob"]
+# Vendored skill tooling, not project code. Markdown is excluded because ruff
+# formats Python blocks inside .md files and would rewrite the canonical
+# ADR/MVP docs against the single-quote style.
+extend-exclude = ["uncle-bob", "*.md"]
 
 line-length = 90
 preview = false
