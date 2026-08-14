@@ -1,11 +1,15 @@
+import json
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from credent.harness.context import ExecutionContext, new_id
+from credent.storage.repositories import InvocationRecord, RunRecord
 
 if TYPE_CHECKING:
     from pydantic import BaseModel
 
     from credent.harness.registry import CapabilityInfo, CapabilityRegistry
+    from credent.storage.repositories import RunRepository
 
 
 def _coerce_input(input_model: type[BaseModel], raw: object) -> BaseModel:
@@ -37,17 +41,26 @@ def _coerce_input(input_model: type[BaseModel], raw: object) -> BaseModel:
 class Harness:
     """Resolves, validates, and executes capabilities.
 
-    T3 is persistence-free: it holds no storage or host references. T7 adds
-    an optional `RunRepository` and the persistence branch around `execute`.
+    Persistence is optional. Without a `RunRepository`, `run` behaves
+    exactly as in T3: no invocation or run rows. With one, every `run` call
+    saves an invocation row and a `'running'` run row before `execute`,
+    then finishes the row `'succeeded'` (with the output as JSON) or
+    `'failed'` if `execute` raises.
 
     Parameters
     ----------
     registry : CapabilityRegistry
         The capability registry this harness runs against.
+    runs : RunRepository | None
+        Persists invocations and runs. `None` (the default) skips
+        persistence entirely.
     """
 
-    def __init__(self, registry: CapabilityRegistry) -> None:
+    def __init__(
+        self, registry: CapabilityRegistry, runs: RunRepository | None = None
+    ) -> None:
         self._registry = registry
+        self._runs = runs
 
     async def run(
         self, capability: str, input: object, context: ExecutionContext
@@ -82,7 +95,39 @@ class Harness:
         coerced_input = _coerce_input(entry.input_model, input)
         run_id = new_id()
         run_context = context.model_copy(update={'parent_run_id': run_id})
-        return await entry.capability.execute(coerced_input, run_context)
+
+        runs = self._runs
+        if runs is None:
+            return await entry.capability.execute(coerced_input, run_context)
+
+        started_at = datetime.now(UTC)
+        runs.save_invocation(
+            InvocationRecord(
+                id=context.invocation_id,
+                trigger=context.trigger,
+                actor=context.actor,
+                correlation_id=context.correlation_id,
+                metadata_json=json.dumps(context.metadata),
+                created_at=started_at,
+            )
+        )
+        runs.create_run(
+            RunRecord(
+                id=run_id,
+                capability=capability,
+                invocation_id=context.invocation_id,
+                status='running',
+                input_json=coerced_input.model_dump_json(),
+                started_at=started_at,
+            )
+        )
+        try:
+            output = await entry.capability.execute(coerced_input, run_context)
+        except Exception:
+            runs.finish_run(run_id, 'failed', None, datetime.now(UTC))
+            raise
+        runs.finish_run(run_id, 'succeeded', output.model_dump_json(), datetime.now(UTC))
+        return output
 
     def list_capabilities(self) -> list[CapabilityInfo]:
         """List every registered capability's public info.
