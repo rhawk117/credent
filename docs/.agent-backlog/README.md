@@ -39,7 +39,7 @@ Both host agents expose lifecycle hooks, and they are wire-compatible:
 - Semantics differences to encode in fixtures: Copilot timeouts are always fail-open (default 30s); Copilot exit-2 denies only on `preToolUse`/`permissionRequest`; Copilot's `agentStop` supports block-to-continue with an 8-consecutive-block runaway guard; Claude Code `Stop` blocks via exit 2.
 - Sources: docs.github.com/en/copilot/reference/hooks-reference, docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks, code.claude.com/docs/en/hooks.md.
 
-## Environment facts (verified 2026-08-13)
+## Environment facts (verified 2026-08-13, re-verified 2026-08-14)
 
 - Python 3.14.6 via uv (`.python-version` pins 3.14); uv 0.11.29.
 - `claude` CLI installed; `copilot` CLI **not** installed; `gh` installed.
