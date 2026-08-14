@@ -14,13 +14,11 @@ Resume the credent engineering loop exactly as documented in /CLAUDE.md ("Engine
    - `docs/.agent-backlog/README.md` — decision log; do not re-open settled decisions.
    - The current phase pack: lowest-numbered `docs/.agent-backlog/phase-0N/` whose tasks.md still has an empty Evidence section. Read its objectives.md, context.md, tasks.md.
    - Git state: `git status -sb`, `git log --oneline -5 develop`, open PRs (`gh pr list`). If a task branch exists with unmerged work, finish or reconcile it before starting anything new.
-   - If `docs/.agent-backlog/STAGE-2-PLAN.md` still exists, bootstrap is unfinished — execute that file first and delete it when its verification section has evidence.
-
-2. **Select work**: the first task in the current phase's tasks.md with an empty Evidence section whose dependencies (listed per task) have evidence. Independent tasks may run in parallel — one engineer each, isolated worktrees, per CLAUDE.md.
+2. **Select work**: the first task in the current phase's tasks.md with an empty Evidence section whose dependencies (listed per task) have evidence. If no task in the phase has evidence yet (the phase is just starting), first dispatch **scout** with the **triaging-phase-evidence** skill named in the prompt to close the pack's open unknowns. Independent tasks may run in parallel — one engineer each, isolated worktrees, per CLAUDE.md.
 
 3. **Run the per-task cycle** from CLAUDE.md with the named agents (scout → code-analyst escalation → plan-critic gate → engineer → git-publisher). Write every dispatch prompt with the **promptlint** skill. Record actual command output in the task's Evidence section before moving on.
 
-4. **Phase exit**: when every task has evidence and the exit-criteria commands in objectives.md pass, present the evidence and ask the user to approve the merge commit `develop` → `main` + tag `phase-0N`. Never perform that merge unprompted.
+4. **Phase exit**: when every task has evidence and the exit-criteria commands in objectives.md pass, present the evidence and ask the user to approve a PR from `develop` into `main` + tag `phase-0N` (branch protection requires an approving review plus the `check` status). Never open that PR unprompted.
 
 ## Hard rules carried from CLAUDE.md
 

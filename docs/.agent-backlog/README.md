@@ -6,7 +6,7 @@ Implementation backlog for the credent MVP, split into three phases. Each phase 
 - `context.md` — decisions, constraints, and ADR/MVP facts the phase depends on, including approaches that are ruled out.
 - `tasks.md` — ordered tasks, each with a verification command and an Evidence section the executing agent fills with actual command output.
 
-Phases execute in order. A phase is complete when every task's Evidence section is filled, its exit-criteria commands pass, and `develop` is merge-committed into `main` with tag `phase-0N` (user-gated). The per-task engineering loop is documented in /CLAUDE.md.
+Phases execute in order. A phase is complete when every task's Evidence section is filled, its exit-criteria commands pass, and a PR from `develop` into `main` is approved and merged with tag `phase-0N` (user-gated). The per-task engineering loop is documented in /CLAUDE.md.
 
 Source of truth for architecture: `docs/ADR.md`. Research scope: `docs/MVP.md`. Both are settled. Where this backlog contradicts them, the backlog wins — it encodes later, user-approved decisions recorded below.
 
@@ -21,6 +21,8 @@ Source of truth for architecture: `docs/ADR.md`. Research scope: `docs/MVP.md`. 
 7. **One live ClaudeCodeHost smoke run is part of the Phase 2 exit.** The full evaluation program (MVP.md "Evaluation Progression") is post-MVP activity; the MVP proves the machinery with RecordedHost/FakeHost determinism plus one small real run for cost/latency ground truth.
 8. **Merge policy: auto squash-merge on green CI** for task PRs into `develop`; `develop` → `main` phase merges are gated on the user.
 9. **Engineering loop** (documented in /CLAUDE.md): scout (haiku) triage → code-analyst escalation for judgment calls → plan-critic gate on non-trivial tasks → one engineer (fable-5) per task committing through pre-commit → git-publisher PR + CI watch + squash-merge. Conventional commits `kind(scope): summary`.
+10. **Branch protection and PR-based phase merges** (settled 2026-08-13, after #8): `main` requires a PR with an approving review plus the `check` status; `develop` requires the `check` status; merged remote branches auto-delete. Phase completion therefore happens via a PR `develop` → `main` — still user-gated — rather than a locally pushed merge commit.
+11. **Loop skills, named in dispatch prompts** (2026-08-14): `triaging-phase-evidence` (pre-phase research and evidence triage into the phase pack) and `cleaning-stale-docs` (doc references made stale by a change). Both were TDD-tested against haiku baselines; spontaneous skill discovery by subagents proved unreliable, so dispatch prompts must name the required skill explicitly.
 
 ## Host hook research (verified 2026-08-13, official docs)
 
