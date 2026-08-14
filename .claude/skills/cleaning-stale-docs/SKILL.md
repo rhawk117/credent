@@ -1,6 +1,6 @@
 ---
 name: cleaning-stale-docs
-description: Use when a process, policy, file, or name has changed and documentation may still reference the old state — after workflow changes, renames, file deletions, or infrastructure changes.
+description: Use when cleaning up stale or outdated documentation references after a process, policy, file, or name changed — workflow changes, renames, file deletions, infrastructure changes — including cleanup that looks like simple search-and-replace.
 ---
 
 # Cleaning Stale Docs
